@@ -107,10 +107,14 @@ class IntrospectorHelper(object):
             if isinstance(serializer, ListSerializer):
                 serializer = serializer.child
 
-        if inspect.isclass(serializer):
-            return serializer.__name__
+        if hasattr(serializer, 'Meta') and hasattr(serializer.Meta, 'name'):
+            s = serializer.Meta.name
+        elif inspect.isclass(serializer):
+            s = serializer.__name__
+        else:
+            s = serializer.__class__.__name__
 
-        return serializer.__class__.__name__
+        return s
 
     @staticmethod
     def get_summary(callback, docstring=None):
