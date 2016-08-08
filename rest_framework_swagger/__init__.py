@@ -1,4 +1,4 @@
-VERSION = '0.3.5'
+VERSION = '0.3.6-atlas'
 
 DEFAULT_SWAGGER_SETTINGS = {
     'exclude_namespaces': [],
