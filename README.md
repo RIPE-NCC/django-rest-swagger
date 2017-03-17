@@ -41,9 +41,9 @@ This project is built on the [Django REST Framework Docs](https://github.com/mar
 for more information, see the [documentation][docs].
 
 ## Requirements
-* Python (2.6.5+, 2.7, 3.2, 3.3, 3.4)
-* Django (1.5.5+, 1.6, 1.7, 1.8)
-* Django REST framework (2.3.8+)
+* Python (2.7, 3.3, 3.4, 3.5)
+* Django (1.8+)
+* Django REST framework (3.8+)
 * PyYAML (3.10+)
 
 ## Bugs & Contributions
@@ -85,9 +85,9 @@ Many thanks to Tom Christie & all the contributors who have developed [Django RE
 
 [build-status-badge]: https://travis-ci.org/marcgibbons/django-rest-swagger.svg?branch=master
 [build-status]: https://travis-ci.org/marcgibbons/django-rest-swagger
-[pypi-version]: https://pypip.in/version/django-rest-swagger/badge.svg
+[pypi-version]: https://img.shields.io/pypi/v/django-rest-swagger.svg
 [pypi]: https://pypi.python.org/pypi/django-rest-swagger
 [license-badge]: https://img.shields.io/pypi/l/django-rest-swagger.svg
 [license]: https://pypi.python.org/pypi/django-rest-swagger/
-[docs-badge]: https://readthedocs.org/projects/django-rest-swagger/badge/
-[docs]: http://django-rest-swagger.readthedocs.org/
+[docs-badge]: https://readthedocs.io/projects/django-rest-swagger/badge/
+[docs]: http://django-rest-swagger.readthedocs.io/

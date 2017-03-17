@@ -8,9 +8,11 @@ Example:
 .. code-block:: python
 
     SWAGGER_SETTINGS = {
+        'exclude_url_names': [],
         'exclude_namespaces': [],
         'api_version': '0.1',
         'api_path': '/',
+        'relative_paths': False,
         'enabled_methods': [
             'get',
             'post',
@@ -85,6 +87,13 @@ The methods that can be interacted with in the UI
 
 Default: :code:`['get', 'post', 'put', 'patch', 'delete']`
 
+exclude_url_names
+------------------------
+
+list URL names to ignore
+
+Default: :code:`[]`
+
 exclude_namespaces
 ------------------------
 
@@ -145,6 +154,13 @@ Then in app/views.py:
     def permission_denied_handler(request):
         from django.http import HttpResponse
         return HttpResponse('you have no permissions!')
+
+relative_paths
+--------------
+
+set to True to make API paths relative to specified :code:`api_path`.
+
+Default: :code:`False`
 
 resource_access_handler
 -------------------------

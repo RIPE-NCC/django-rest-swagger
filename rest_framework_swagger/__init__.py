@@ -1,10 +1,12 @@
-VERSION = '0.3.6-atlas'
+VERSION = '0.3.10-atlas'
 
 DEFAULT_SWAGGER_SETTINGS = {
+    'exclude_url_names': [],
     'exclude_namespaces': [],
     'api_version': '',
     'api_path': '/',
     'api_key': '',
+    'relative_paths': False,
     'token_type': 'Token',
     'enabled_methods': ['get', 'post', 'put', 'patch', 'delete'],
     'is_authenticated': False,

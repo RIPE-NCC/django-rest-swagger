@@ -185,6 +185,11 @@ class BaseMethodIntrospector(object):
         self.path = view_introspector.path
         self.user = view_introspector.user
 
+    @property
+    def is_array_response(self):
+        """ Support definition of array responses with the 'many' attr """
+        return self.get_yaml_parser().object.get('many')
+
     def get_module(self):
         return self.callback.__module__
 
@@ -429,16 +434,18 @@ class BaseMethodIntrospector(object):
         Builds form parameters from the serializer class
         """
         data = []
-        serializer = self.get_request_serializer_class()
+        serializer_class = self.get_request_serializer_class()
 
-        if serializer is None:
+        if serializer_class is None:
             return data
 
-        fields = serializer().get_fields()
+        serializer = serializer_class()
+        fields = serializer.get_fields()
+        read_only_fields = getattr(getattr(serializer, 'Meta', None), 'read_only_fields', [])
 
         for name, field in fields.items():
 
-            if getattr(field, 'read_only', False):
+            if getattr(field, 'read_only', False) or name in read_only_fields:
                 continue
 
             data_type, data_format = get_data_type(field) or ('string', 'string')
@@ -449,6 +456,17 @@ class BaseMethodIntrospector(object):
             # data_format = 'string'
             # if data_type in self.PRIMITIVES:
                 # data_format = self.PRIMITIVES.get(data_type)[0]
+
+            choices = []
+            if data_type in BaseMethodIntrospector.ENUMS:
+                if isinstance(field.choices, list):
+                    choices = [k for k, v in field.choices]
+                elif isinstance(field.choices, dict):
+                    choices = [k for k, v in field.choices.items()]
+
+            if choices:
+                # guest data type and format
+                data_type, data_format = get_primitive_type(choices[0]) or ('string', 'string')
 
             f = {
                 'paramType': 'form',
@@ -478,15 +496,25 @@ class BaseMethodIntrospector(object):
                 f['maximum'] = max_value
 
             # ENUM options
-            if data_type in BaseMethodIntrospector.ENUMS:
-                if isinstance(field.choices, list):
-                    f['enum'] = [k for k, v in field.choices]
-                elif isinstance(field.choices, dict):
-                    f['enum'] = [k for k, v in field.choices.items()]
+            if choices:
+                f['enum'] = choices
 
             data.append(f)
 
         return data
+
+
+def get_primitive_type(var):
+    if isinstance(var, bool):
+        return 'boolean', 'boolean'
+    elif isinstance(var, int):
+        return 'integer', 'int32'
+    elif isinstance(var, float):
+        return 'number', 'float'
+    elif isinstance(var, six.string_types):
+        return 'string', 'string'
+    else:
+        return 'string', 'string'  # 'default'
 
 
 def get_data_type(field):
@@ -651,6 +679,12 @@ class ViewSetMethodIntrospector(BaseMethodIntrospector):
         super(ViewSetMethodIntrospector, self) \
             .__init__(view_introspector, method)
         self.http_method = http_method.upper()
+
+    @property
+    def is_array_response(self):
+        """ ViewSet.list methods always return array responses """
+        return (self.method == 'list' or
+                super(ViewSetMethodIntrospector, self).is_array_response)
 
     def get_http_method(self):
         return self.http_method
