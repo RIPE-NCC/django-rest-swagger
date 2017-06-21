@@ -81,7 +81,7 @@ class SwaggerUIView(View):
             }
         }
         response = render_to_response(
-            template_name, RequestContext(request, data))
+            template_name, context=data)
 
         return response
 
