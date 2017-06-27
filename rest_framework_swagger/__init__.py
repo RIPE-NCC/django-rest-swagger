@@ -1,4 +1,4 @@
-VERSION = '0.3.11-atlas'
+VERSION = '0.3.12-atlas'
 
 DEFAULT_SWAGGER_SETTINGS = {
     'exclude_url_names': [],
