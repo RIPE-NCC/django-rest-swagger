@@ -5,7 +5,7 @@ from django.conf import settings
 from django.views.generic import View
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_text
-from django.shortcuts import render
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.exceptions import PermissionDenied
 from .compat import import_string
@@ -61,7 +61,7 @@ class SwaggerUIView(View):
         template_name = rfs.SWAGGER_SETTINGS.get('template_path')
         data = {
             'swagger_settings': {
-                'discovery_url': "%s/api-docs/api/v2" % get_full_base_path(request),
+                'discovery_url': "%s/api-docs/" % get_full_base_path(request),
                 'api_key': rfs.SWAGGER_SETTINGS.get('api_key', ''),
                 'api_version': rfs.SWAGGER_SETTINGS.get('api_version', ''),
                 'token_type': rfs.SWAGGER_SETTINGS.get('token_type'),
@@ -80,7 +80,8 @@ class SwaggerUIView(View):
                     json.dumps(getattr(settings, 'CSRF_COOKIE_NAME', 'csrftoken'))),
             }
         }
-        response = render(request, template_name, context=data)
+        response = render_to_response(
+            template_name, context=data)
 
         return response
 

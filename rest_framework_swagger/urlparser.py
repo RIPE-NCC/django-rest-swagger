@@ -125,7 +125,7 @@ class UrlParser(object):
             if re.match('^/?%s(/.*)?$' % re.escape(filter_path), path) is None:
                 return None
 
-        path = path.replace('<', '{').replace('>', '}').replace('\\','')
+        path = path.replace('<', '{').replace('>', '}')
         path = self.__make_relative__(path)
 
         if self.__exclude_format_endpoints__(path):
