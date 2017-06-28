@@ -7,6 +7,8 @@ from rest_framework_swagger import SWAGGER_SETTINGS
 
 
 class APIDocView(APIView):
+    resource_access_handler = None
+
     def initial(self, request, *args, **kwargs):
         self.permission_classes = (self.get_permission_class(request),)
         self.host = request.build_absolute_uri()
@@ -22,7 +24,7 @@ class APIDocView(APIView):
         return AllowAny
 
     def handle_resource_access(self, request, resource):
-        resource_access_handler = SWAGGER_SETTINGS.get('resource_access_handler')
+        resource_access_handler = self.resource_access_handler or SWAGGER_SETTINGS.get('resource_access_handler')
         if isinstance(resource_access_handler, six.string_types):
             resource_access_handler = import_string(resource_access_handler)
             if resource_access_handler:
