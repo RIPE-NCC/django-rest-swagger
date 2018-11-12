@@ -1,6 +1,6 @@
 # Forked from upstream 0.3.10, which was the last pre-2.0 release
-# Increment the 'atlas' local version component for new releases
-VERSION = '1!0.3.10+atlas1'
+# Uses the 1! epoch which indicates the fork with upstream
+VERSION = '1!2.0.0'
 
 DEFAULT_SWAGGER_SETTINGS = {
     'exclude_url_names': [],

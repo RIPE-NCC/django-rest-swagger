@@ -242,7 +242,10 @@ class DocumentationGenerator(object):
             if serializer_name is not None:
                 return serializer_name
 
-            return 'object'
+            # Why? This causes an empty and useless response class section:
+            # return 'object'
+
+            return None
 
     def _get_serializer_set(self, apis):
         """

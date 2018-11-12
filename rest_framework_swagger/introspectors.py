@@ -218,6 +218,14 @@ class BaseMethodIntrospector(object):
             self.callback)
 
     def ask_for_serializer_class(self):
+        if hasattr(self.callback, 'get_swagger_serializer_class'):
+            cls_or_str = self.callback.get_swagger_serializer_class(self.method)
+            if isinstance(cls_or_str, basestring):
+                cls_or_str = self.get_yaml_parser()._load_class(
+                    cls_or_str,
+                    self.callback,
+                )
+            return cls_or_str
         if hasattr(self.callback, 'get_serializer_class'):
             view = self.create_view()
             parser = self.get_yaml_parser()
@@ -384,6 +392,13 @@ class BaseMethodIntrospector(object):
         return params
 
     def build_query_parameters(self):
+        cls = self.callback
+        if cls and hasattr(cls, "describe_parameters"):
+            return cls.describe_parameters(self.method)
+        else:
+            return self.build_query_parameters_from_docstring()
+
+    def build_query_parameters_from_docstring(self):
         params = []
 
         docstring = self.retrieve_docstring() or ''
@@ -927,8 +942,16 @@ class YAMLDocstringParser(object):
 
     def __init__(self, method_introspector):
         self.method_introspector = method_introspector
-        self.object = self.load_obj_from_docstring(
-            docstring=self.method_introspector.get_docs())
+
+        if hasattr(self.method_introspector, "method") and hasattr(
+            self.method_introspector.callback, "describe_method"
+        ):
+            self.object = self.method_introspector.callback.describe_method(
+                self.method_introspector.method
+            )
+        else:
+            self.object = self.load_obj_from_docstring(
+                docstring=self.method_introspector.get_docs())
         if self.object is None:
             self.object = {}
 
